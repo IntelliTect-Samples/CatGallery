@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using CatGallery.Data;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -25,7 +26,8 @@ builder.Logging
 
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddEnvironmentVariables();
+    .AddEnvironmentVariables()
+    .AddUserSecrets<Program>();
 
 #region Configure Services
 
@@ -51,8 +53,19 @@ services
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
-services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie();
+// https://learn.microsoft.com/en-us/aspnet/core/security/authentication/social/microsoft-logins?view=aspnetcore-7.0
+services.AddAuthentication(v =>
+    {
+        v.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        v.DefaultAuthenticateScheme = MicrosoftAccountDefaults.AuthenticationScheme;
+        v.DefaultChallengeScheme = MicrosoftAccountDefaults.AuthenticationScheme;
+    })
+    .AddCookie()
+    .AddMicrosoftAccount(microsoftOptions =>
+    {
+        microsoftOptions.ClientId = builder.Configuration["Authentication:Microsoft:ClientId"]!;
+        microsoftOptions.ClientSecret = builder.Configuration["Authentication:Microsoft:ClientSecret"]!;
+    });
 
 #endregion
 
@@ -72,20 +85,6 @@ if (app.Environment.IsDevelopment())
     });
 
     app.MapCoalesceSecurityOverview("coalesce-security");
-
-    // TODO: Dummy authentication for initial development.
-    // Replace this with ASP.NET Core Identity, Windows Authentication, or some other scheme.
-    // This exists only because Coalesce restricts all generated pages and API to only logged in users by default.
-    app.Use(async (context, next) =>
-    {
-        Claim[] claims = new[] { new Claim(ClaimTypes.Name, "developmentuser") };
-
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        await context.SignInAsync(context.User = new ClaimsPrincipal(identity));
-
-        await next.Invoke();
-    });
-    // End Dummy Authentication.
 }
 
 app.UseAuthentication();

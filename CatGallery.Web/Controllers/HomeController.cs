@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatGallery.Web.Controllers;
@@ -11,6 +12,7 @@ public class HomeController : Controller
     // Prevent caching of this route.
     // The served file will contain the links to compiled js/css that include hashes in the filenames.
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+    [Authorize]
     public IActionResult Index(
         [FromServices] IWebHostEnvironment hostingEnvironment
     )

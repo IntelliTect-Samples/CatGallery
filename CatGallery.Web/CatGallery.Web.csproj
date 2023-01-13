@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <DotnetCliToolTargetFramework>net7.0</DotnetCliToolTargetFramework>
+    <UserSecretsId>34fc9b8e-30e9-468d-b08c-40f6994705b1</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="IntelliTect.Coalesce.Vue" Version="$(CoalesceVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>
