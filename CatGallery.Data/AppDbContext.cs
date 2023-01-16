@@ -6,7 +6,9 @@ namespace CatGallery.Data;
 [Coalesce]
 public class AppDbContext : DbContext
 {
-    public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
+    public DbSet<Photo> Photos => Set<Photo>();
+    public DbSet<PhotoTag> PhotoTags => Set<PhotoTag>();
+    public DbSet<Tag> Tags => Set<Tag>();
 
     public AppDbContext()
     {

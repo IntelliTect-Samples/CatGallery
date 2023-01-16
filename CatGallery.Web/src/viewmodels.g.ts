@@ -3,31 +3,89 @@ import * as $models from './models.g'
 import * as $apiClients from './api-clients.g'
 import { ViewModel, ListViewModel, ServiceViewModel, DeepPartial, defineProps } from 'coalesce-vue/lib/viewmodel'
 
-export interface ApplicationUserViewModel extends $models.ApplicationUser {
-  applicationUserId: number | null;
-  name: string | null;
+export interface PhotoViewModel extends $models.Photo {
+  photoId: number | null;
+  tags: PhotoTagViewModel[] | null;
+  uploadDate: Date | null;
+  uploadedById: string | null;
+  uploadedByName: string | null;
+  originalFileName: string | null;
+  storageUrl: string | null;
+  isPublic: boolean | null;
 }
-export class ApplicationUserViewModel extends ViewModel<$models.ApplicationUser, $apiClients.ApplicationUserApiClient, number> implements $models.ApplicationUser  {
+export class PhotoViewModel extends ViewModel<$models.Photo, $apiClients.PhotoApiClient, number> implements $models.Photo  {
   
-  constructor(initialData?: DeepPartial<$models.ApplicationUser> | null) {
-    super($metadata.ApplicationUser, new $apiClients.ApplicationUserApiClient(), initialData)
+  
+  public addToTags() {
+    return this.$addChild('tags') as PhotoTagViewModel
+  }
+  
+  constructor(initialData?: DeepPartial<$models.Photo> | null) {
+    super($metadata.Photo, new $apiClients.PhotoApiClient(), initialData)
   }
 }
-defineProps(ApplicationUserViewModel, $metadata.ApplicationUser)
+defineProps(PhotoViewModel, $metadata.Photo)
 
-export class ApplicationUserListViewModel extends ListViewModel<$models.ApplicationUser, $apiClients.ApplicationUserApiClient, ApplicationUserViewModel> {
+export class PhotoListViewModel extends ListViewModel<$models.Photo, $apiClients.PhotoApiClient, PhotoViewModel> {
   
   constructor() {
-    super($metadata.ApplicationUser, new $apiClients.ApplicationUserApiClient())
+    super($metadata.Photo, new $apiClients.PhotoApiClient())
+  }
+}
+
+
+export interface PhotoTagViewModel extends $models.PhotoTag {
+  photoTagId: number | null;
+  photoId: number | null;
+  photo: PhotoViewModel | null;
+  tagId: string | null;
+  tag: TagViewModel | null;
+}
+export class PhotoTagViewModel extends ViewModel<$models.PhotoTag, $apiClients.PhotoTagApiClient, number> implements $models.PhotoTag  {
+  
+  constructor(initialData?: DeepPartial<$models.PhotoTag> | null) {
+    super($metadata.PhotoTag, new $apiClients.PhotoTagApiClient(), initialData)
+  }
+}
+defineProps(PhotoTagViewModel, $metadata.PhotoTag)
+
+export class PhotoTagListViewModel extends ListViewModel<$models.PhotoTag, $apiClients.PhotoTagApiClient, PhotoTagViewModel> {
+  
+  constructor() {
+    super($metadata.PhotoTag, new $apiClients.PhotoTagApiClient())
+  }
+}
+
+
+export interface TagViewModel extends $models.Tag {
+  name: string | null;
+  color: string | null;
+}
+export class TagViewModel extends ViewModel<$models.Tag, $apiClients.TagApiClient, string> implements $models.Tag  {
+  
+  constructor(initialData?: DeepPartial<$models.Tag> | null) {
+    super($metadata.Tag, new $apiClients.TagApiClient(), initialData)
+  }
+}
+defineProps(TagViewModel, $metadata.Tag)
+
+export class TagListViewModel extends ListViewModel<$models.Tag, $apiClients.TagApiClient, TagViewModel> {
+  
+  constructor() {
+    super($metadata.Tag, new $apiClients.TagApiClient())
   }
 }
 
 
 const viewModelTypeLookup = ViewModel.typeLookup = {
-  ApplicationUser: ApplicationUserViewModel,
+  Photo: PhotoViewModel,
+  PhotoTag: PhotoTagViewModel,
+  Tag: TagViewModel,
 }
 const listViewModelTypeLookup = ListViewModel.typeLookup = {
-  ApplicationUser: ApplicationUserListViewModel,
+  Photo: PhotoListViewModel,
+  PhotoTag: PhotoTagListViewModel,
+  Tag: TagListViewModel,
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
 }

@@ -8,55 +8,55 @@ using System.Security.Claims;
 
 namespace CatGallery.Web.Models
 {
-    public partial class ApplicationUserDtoGen : GeneratedDto<CatGallery.Data.Models.ApplicationUser>
+    public partial class TagDtoGen : GeneratedDto<CatGallery.Data.Models.Tag>
     {
-        public ApplicationUserDtoGen() { }
+        public TagDtoGen() { }
 
-        private int? _ApplicationUserId;
         private string _Name;
+        private string _Color;
 
-        public int? ApplicationUserId
-        {
-            get => _ApplicationUserId;
-            set { _ApplicationUserId = value; Changed(nameof(ApplicationUserId)); }
-        }
         public string Name
         {
             get => _Name;
             set { _Name = value; Changed(nameof(Name)); }
         }
+        public string Color
+        {
+            get => _Color;
+            set { _Color = value; Changed(nameof(Color)); }
+        }
 
         /// <summary>
         /// Map from the domain object to the properties of the current DTO instance.
         /// </summary>
-        public override void MapFrom(CatGallery.Data.Models.ApplicationUser obj, IMappingContext context, IncludeTree tree = null)
+        public override void MapFrom(CatGallery.Data.Models.Tag obj, IMappingContext context, IncludeTree tree = null)
         {
             if (obj == null) return;
             var includes = context.Includes;
 
-            this.ApplicationUserId = obj.ApplicationUserId;
             this.Name = obj.Name;
+            this.Color = obj.Color;
         }
 
         /// <summary>
         /// Map from the current DTO instance to the domain object.
         /// </summary>
-        public override void MapTo(CatGallery.Data.Models.ApplicationUser entity, IMappingContext context)
+        public override void MapTo(CatGallery.Data.Models.Tag entity, IMappingContext context)
         {
             var includes = context.Includes;
 
             if (OnUpdate(entity, context)) return;
 
-            if (ShouldMapTo(nameof(ApplicationUserId))) entity.ApplicationUserId = (ApplicationUserId ?? entity.ApplicationUserId);
             if (ShouldMapTo(nameof(Name))) entity.Name = Name;
+            if (ShouldMapTo(nameof(Color))) entity.Color = Color;
         }
 
         /// <summary>
         /// Map from the current DTO instance to a new instance of the domain object.
         /// </summary>
-        public override CatGallery.Data.Models.ApplicationUser MapToNew(IMappingContext context)
+        public override CatGallery.Data.Models.Tag MapToNew(IMappingContext context)
         {
-            var entity = new CatGallery.Data.Models.ApplicationUser();
+            var entity = new CatGallery.Data.Models.Tag();
             MapTo(entity, context);
             return entity;
         }
