@@ -83,6 +83,15 @@ public class Photo
     }
 
     private static TokenCredential AzureCredential = new DefaultAzureCredential();
+
+    [DefaultDataSource]
+    public class DefaultSource : StandardDataSource<Photo, AppDbContext>
+    {
+        public DefaultSource(CrudContext<AppDbContext> context) : base(context) { }
+
+        public override IQueryable<Photo> GetQuery(IDataSourceParameters parameters) => base.GetQuery(parameters)
+            .Where(p => p.IsPublic || p.UploadedById == User.GetUserId());
+    }
 }
 
 public class PhotoTag
@@ -94,6 +103,15 @@ public class PhotoTag
 
     public string TagId { get; set; }
     public Tag Tag { get; set; }
+
+    [DefaultDataSource]
+    public class DefaultSource : StandardDataSource<PhotoTag, AppDbContext>
+    {
+        public DefaultSource(CrudContext<AppDbContext> context) : base(context) { }
+
+        public override IQueryable<PhotoTag> GetQuery(IDataSourceParameters parameters) => base.GetQuery(parameters)
+            .Where(p => p.Photo.IsPublic || p.Photo.UploadedById == User.GetUserId());
+    }
 }
 
 public class Tag
