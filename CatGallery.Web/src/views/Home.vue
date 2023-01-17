@@ -7,13 +7,13 @@
         grid-gap: 16px;
       "
     >
-      <v-card v-for="(image, n) in images" :key="n">
-        <v-img height="250" :src="image.imageUrl"></v-img>
+      <v-card v-for="image in photoList.$items" :key="image.$stableId">
+        <v-img height="250" :src="image.download.url ?? undefined"></v-img>
         <v-card-text>
           <v-chip
-            v-for="(tag, tagN) in image.tags"
-            :key="`${n}-${tagN}`"
-            :color="tag.color"
+            v-for="tag in image.tags"
+            :key="tag.$stableId"
+            :color="tag.color || 'primary'"
             dark
             small
             class="mr-1"
@@ -27,11 +27,17 @@
 </template>
 
 <script setup lang="ts">
-const images = [...Array(10)].map((i) => ({
-  imageUrl: "https://via.placeholder.com/450",
-  tags: [
-    { name: "Tag 1", color: "#345678" },
-    { name: "Tag 2", color: "#876543" },
-  ],
-}));
+import { PhotoListViewModel } from "@/viewmodels.g";
+import { watch } from "vue";
+
+const props = defineProps({ galleryVersion: Number });
+
+const photoList = new PhotoListViewModel();
+photoList.$pageSize = 1000;
+photoList.$load();
+
+watch(
+  () => props.galleryVersion,
+  () => photoList.$load()
+);
 </script>

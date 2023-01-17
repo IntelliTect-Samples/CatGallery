@@ -66,7 +66,11 @@
     <v-main>
       <transition name="router-transition" mode="out-in" appear>
         <!-- https://stackoverflow.com/questions/52847979/what-is-router-view-key-route-fullpath -->
-        <router-view ref="routeComponent" :key="$route.path" />
+        <router-view
+          ref="routeComponent"
+          :key="$route.path"
+          :galleryVersion="galleryVersion"
+        />
       </transition>
     </v-main>
   </v-app>
@@ -77,6 +81,7 @@ import { ref, computed, watch, reactive } from "vue";
 import { PhotoListViewModel, TagListViewModel } from "./viewmodels.g";
 
 const uploadOpen = ref(false);
+const galleryVersion = ref(0);
 
 const photoList = new PhotoListViewModel();
 
@@ -89,6 +94,7 @@ async function uploadPhoto() {
   await photoList.upload.invokeWithArgs();
   photoList.upload.resetArgs();
   uploadOpen.value = false;
+  galleryVersion.value++;
 }
 </script>
 

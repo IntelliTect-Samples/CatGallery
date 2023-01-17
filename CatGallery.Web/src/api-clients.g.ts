@@ -15,10 +15,11 @@ export class PhotoApiClient extends ModelApiClient<$models.Photo> {
     return this.$invoke($method, $params, $config)
   }
   
-  public download(id: number, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<File>> {
+  public download(id: number, etag: number, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<File>> {
     const $method = this.$metadata.methods.download
     const $params =  {
       id,
+      etag,
     }
     return this.$invoke($method, $params, $config)
   }

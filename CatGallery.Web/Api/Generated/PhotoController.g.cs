@@ -81,7 +81,8 @@ namespace CatGallery.Web.Api
         [Authorize]
         public virtual async Task<ActionResult<ItemResult<IntelliTect.Coalesce.Models.IFile>>> Download(
             [FromServices] IDataSourceFactory dataSourceFactory,
-            int id)
+            int id,
+            int etag)
         {
             var dataSource = dataSourceFactory.GetDataSource<CatGallery.Data.Models.Photo, CatGallery.Data.Models.Photo>("Default");
             var (itemResult, _) = await dataSource.GetItemAsync(id, new ListParameters());
@@ -90,6 +91,24 @@ namespace CatGallery.Web.Api
                 return new ItemResult<IntelliTect.Coalesce.Models.IFile>(itemResult);
             }
             var item = itemResult.Object;
+
+            var _currentVaryValue = item.PhotoId;
+            if (_currentVaryValue != default)
+            {
+                var _expectedEtagHeader = new Microsoft.Net.Http.Headers.EntityTagHeaderValue('"' + Microsoft.AspNetCore.WebUtilities.Base64UrlTextEncoder.Encode(System.Text.Encoding.UTF8.GetBytes(_currentVaryValue.ToString())) + '"');
+                var _cacheControlHeader = new Microsoft.Net.Http.Headers.CacheControlHeaderValue { Private = true, MaxAge = TimeSpan.Zero };
+                if (etag != default && _currentVaryValue == etag)
+                {
+                    _cacheControlHeader.MaxAge = TimeSpan.FromDays(30);
+                }
+                Response.GetTypedHeaders().CacheControl = _cacheControlHeader;
+                Response.GetTypedHeaders().ETag = _expectedEtagHeader;
+                if (Request.GetTypedHeaders().IfNoneMatch.Any(value => value.Compare(_expectedEtagHeader, true)))
+                {
+                    return StatusCode(StatusCodes.Status304NotModified);
+                }
+            }
+
             var _methodResult = await item.Download();
             await Db.SaveChangesAsync();
             if (_methodResult != null)

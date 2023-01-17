@@ -1,3 +1,4 @@
+using Azure.Core;
 using Azure.Identity;
 using Azure.Storage.Blobs;
 using IntelliTect.Coalesce.Models;
@@ -14,6 +15,7 @@ namespace CatGallery.Data.Models;
 [Delete(SecurityPermissionLevels.DenyAll)]
 public class Photo
 {
+    [DefaultOrderBy(OrderByDirection = DefaultOrderByAttribute.OrderByDirections.Descending)]
     public int PhotoId { get; set; }
 
     [Read]
@@ -44,7 +46,7 @@ public class Photo
         string[] tags
     )
     {
-        var containerClient = new BlobContainerClient(new Uri(configuration["Storage:ContainerUri"]), new DefaultAzureCredential());
+        var containerClient = new BlobContainerClient(new Uri(configuration["Storage:ContainerUri"]), AzureCredential);
         BlobClient blobClient = containerClient.GetBlobClient(Guid.NewGuid().ToString());
 
         await blobClient.UploadAsync(file.Content, true);
@@ -65,17 +67,22 @@ public class Photo
         return photo;
     }
 
-    [Coalesce, ControllerAction(Method = IntelliTect.Coalesce.DataAnnotations.HttpMethod.Get)]
+    [Coalesce, ControllerAction(
+        Method = IntelliTect.Coalesce.DataAnnotations.HttpMethod.Get,
+        VaryByProperty = nameof(PhotoId)
+    )]
     public async Task<IFile> Download()
     {
-        var blobClient = new BlobClient(new Uri(StorageUrl), new DefaultAzureCredential());
-        return new IntelliTect.Coalesce.Models.File
+        var blobClient = new BlobClient(new Uri(StorageUrl), AzureCredential);
+        return new IntelliTect.Coalesce.Models.File()
         {
             Content = await blobClient.OpenReadAsync(),
             Name = OriginalFileName,
             ContentType = "image/" + Path.GetExtension(OriginalFileName).Trim('.'),
         };
     }
+
+    private static TokenCredential AzureCredential = new DefaultAzureCredential();
 }
 
 public class PhotoTag

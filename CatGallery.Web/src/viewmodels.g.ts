@@ -25,9 +25,9 @@ export class PhotoViewModel extends ViewModel<$models.Photo, $apiClients.PhotoAp
   public get download() {
     const download = this.$apiClient.$makeCaller(
       this.$metadata.methods.download,
-      (c) => c.download(this.$primaryKey),
+      (c) => c.download(this.$primaryKey, this.$primaryKey),
       () => ({}),
-      (c, args) => c.download(this.$primaryKey))
+      (c, args) => c.download(this.$primaryKey, this.$primaryKey))
     
     Object.defineProperty(this, 'download', {value: download});
     return download

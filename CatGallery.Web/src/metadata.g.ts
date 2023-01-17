@@ -131,6 +131,13 @@ export const Photo = domain.types.Photo = {
           role: "value",
           get source() { return (domain.types.Photo as ModelType).props.photoId },
         },
+        etag: {
+          name: "etag",
+          displayName: "Etag",
+          type: "number",
+          role: "value",
+          get source() { return (domain.types.Photo as ModelType).props.photoId },
+        },
       },
       return: {
         name: "$return",
