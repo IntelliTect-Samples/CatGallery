@@ -53,6 +53,14 @@ namespace CatGallery.Web.Api
             IDataSource<CatGallery.Data.Models.Photo> dataSource)
             => CountImplementation(parameters, dataSource);
 
+        [HttpPost("delete/{id}")]
+        [Authorize]
+        public virtual Task<ItemResult<PhotoDtoGen>> Delete(
+            int id,
+            IBehaviors<CatGallery.Data.Models.Photo> behaviors,
+            IDataSource<CatGallery.Data.Models.Photo> dataSource)
+            => DeleteImplementation(id, new DataSourceParameters(), dataSource, behaviors);
+
         // Methods from data class exposed through API Controller.
 
         /// <summary>

@@ -13,7 +13,7 @@ export const Photo = domain.types.Photo = {
   type: "model",
   controllerRoute: "Photo",
   get keyProp() { return this.props.photoId }, 
-  behaviorFlags: 0,
+  behaviorFlags: 4,
   props: {
     photoId: {
       name: "photoId",

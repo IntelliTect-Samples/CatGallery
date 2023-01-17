@@ -12,7 +12,6 @@ namespace CatGallery.Data.Models;
 
 [Create(SecurityPermissionLevels.DenyAll)]
 [Edit(SecurityPermissionLevels.DenyAll)]
-[Delete(SecurityPermissionLevels.DenyAll)]
 public class Photo
 {
     [DefaultOrderBy(OrderByDirection = DefaultOrderByAttribute.OrderByDirections.Descending)]
@@ -91,6 +90,22 @@ public class Photo
 
         public override IQueryable<Photo> GetQuery(IDataSourceParameters parameters) => base.GetQuery(parameters)
             .Where(p => p.IsPublic || p.UploadedById == User.GetUserId());
+    }
+
+    public class Behaviors : StandardBehaviors<Photo, AppDbContext>
+    {
+        public Behaviors(CrudContext<AppDbContext> context) : base(context) { }
+
+        public override ItemResult BeforeDelete(Photo item)
+        {
+            if (item.UploadedById != User.GetUserId())
+            {
+                return "You can only delete your own photos.";
+            }
+
+            Db.RemoveRange(item.PhotoTags);
+            return true;
+        }
     }
 }
 
