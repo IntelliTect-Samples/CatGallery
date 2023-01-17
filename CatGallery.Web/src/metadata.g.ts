@@ -148,6 +148,14 @@ export const Photo = domain.types.Photo = {
     },
   },
   dataSources: {
+    defaultSource: {
+      type: "dataSource",
+      name: "DefaultSource",
+      displayName: "Default Source",
+      isDefault: true,
+      props: {
+      },
+    },
   },
 }
 export const PhotoTag = domain.types.PhotoTag = {
@@ -214,6 +222,14 @@ export const PhotoTag = domain.types.PhotoTag = {
   methods: {
   },
   dataSources: {
+    defaultSource: {
+      type: "dataSource",
+      name: "DefaultSource",
+      displayName: "Default Source",
+      isDefault: true,
+      props: {
+      },
+    },
   },
 }
 export const Tag = domain.types.Tag = {

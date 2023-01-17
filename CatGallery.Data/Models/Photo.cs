@@ -33,7 +33,7 @@ public class Photo
     [Read]
     public bool IsPublic { get; set; }
 
-    [ManyToMany("Tags")]
+    [Search, ManyToMany("Tags")]
     public ICollection<PhotoTag> PhotoTags { get; set; }
 
     [Coalesce]
@@ -102,6 +102,7 @@ public class PhotoTag
     public Photo Photo { get; set; }
 
     public string TagId { get; set; }
+    [Search]
     public Tag Tag { get; set; }
 
     [DefaultDataSource]

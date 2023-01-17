@@ -1,5 +1,15 @@
 <template>
   <div class="ma-4">
+    <div style="max-width: 500px" class="mx-auto my-5">
+      <v-text-field
+        solo
+        v-model="photoList.$params.search"
+        placeholder="Search"
+        prepend-inner-icon="fa fa-search"
+        hide-details
+      ></v-text-field>
+    </div>
+
     <div
       style="
         display: grid;
@@ -35,6 +45,8 @@ const props = defineProps({ galleryVersion: Number });
 const photoList = new PhotoListViewModel();
 photoList.$pageSize = 1000;
 photoList.$load();
+
+photoList.$useAutoLoad({ wait: 0 });
 
 watch(
   () => props.galleryVersion,

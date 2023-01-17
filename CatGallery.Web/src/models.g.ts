@@ -26,6 +26,14 @@ export class Photo {
       Object.assign(this, Photo.map(data || {}));
   }
 }
+export namespace Photo {
+  export namespace DataSources {
+    
+    export class DefaultSource implements DataSource<typeof metadata.Photo.dataSources.defaultSource> {
+      readonly $metadata = metadata.Photo.dataSources.defaultSource
+    }
+  }
+}
 
 
 export interface PhotoTag extends Model<typeof metadata.PhotoTag> {
@@ -50,6 +58,14 @@ export class PhotoTag {
   /** Instantiate a new PhotoTag, optionally basing it on the given data. */
   constructor(data?: Partial<PhotoTag> | {[k: string]: any}) {
       Object.assign(this, PhotoTag.map(data || {}));
+  }
+}
+export namespace PhotoTag {
+  export namespace DataSources {
+    
+    export class DefaultSource implements DataSource<typeof metadata.PhotoTag.dataSources.defaultSource> {
+      readonly $metadata = metadata.PhotoTag.dataSources.defaultSource
+    }
   }
 }
 
