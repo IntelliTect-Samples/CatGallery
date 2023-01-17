@@ -6,8 +6,6 @@ export interface Photo extends Model<typeof metadata.Photo> {
   uploadDate: Date | null
   uploadedById: string | null
   uploadedByName: string | null
-  originalFileName: string | null
-  storageUrl: string | null
   isPublic: boolean | null
   photoTags: PhotoTag[] | null
 }

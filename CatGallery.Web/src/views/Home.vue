@@ -1,12 +1,13 @@
 <template>
-  <v-row class="ma-2">
-    <v-col
-      v-for="(image, n) in images"
-      :key="n"
-      class="d-flex child-flex"
-      cols="3"
+  <div class="ma-4">
+    <div
+      style="
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+        grid-gap: 16px;
+      "
     >
-      <v-card>
+      <v-card v-for="(image, n) in images" :key="n">
         <v-img height="250" :src="image.imageUrl"></v-img>
         <v-card-text>
           <v-chip
@@ -21,8 +22,8 @@
           </v-chip>
         </v-card-text>
       </v-card>
-    </v-col>
-  </v-row>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

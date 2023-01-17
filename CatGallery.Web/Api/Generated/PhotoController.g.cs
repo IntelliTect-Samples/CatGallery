@@ -53,21 +53,61 @@ namespace CatGallery.Web.Api
             IDataSource<CatGallery.Data.Models.Photo> dataSource)
             => CountImplementation(parameters, dataSource);
 
-        [HttpPost("save")]
-        [Authorize]
-        public virtual Task<ItemResult<PhotoDtoGen>> Save(
-            [FromForm] PhotoDtoGen dto,
-            [FromQuery] DataSourceParameters parameters,
-            IDataSource<CatGallery.Data.Models.Photo> dataSource,
-            IBehaviors<CatGallery.Data.Models.Photo> behaviors)
-            => SaveImplementation(dto, parameters, dataSource, behaviors);
+        // Methods from data class exposed through API Controller.
 
-        [HttpPost("delete/{id}")]
+        /// <summary>
+        /// Method: Upload
+        /// </summary>
+        [HttpPost("Upload")]
         [Authorize]
-        public virtual Task<ItemResult<PhotoDtoGen>> Delete(
-            int id,
-            IBehaviors<CatGallery.Data.Models.Photo> behaviors,
-            IDataSource<CatGallery.Data.Models.Photo> dataSource)
-            => DeleteImplementation(id, new DataSourceParameters(), dataSource, behaviors);
+        public virtual async Task<ItemResult<PhotoDtoGen>> Upload(
+            [FromServices] Microsoft.Extensions.Configuration.IConfiguration configuration,
+            Microsoft.AspNetCore.Http.IFormFile file,
+            [FromForm(Name = "isPublic")] bool isPublic,
+            [FromForm(Name = "tags")] string[] tags)
+        {
+            IncludeTree includeTree = null;
+            var _mappingContext = new MappingContext(User);
+            var _methodResult = await CatGallery.Data.Models.Photo.Upload(Db, User, configuration, file == null ? null : new IntelliTect.Coalesce.Models.File { Name = file.FileName, ContentType = file.ContentType, Length = file.Length, Content = file.OpenReadStream() }, isPublic, tags.ToArray());
+            var _result = new ItemResult<PhotoDtoGen>();
+            _result.Object = Mapper.MapToDto<CatGallery.Data.Models.Photo, PhotoDtoGen>(_methodResult, _mappingContext, includeTree);
+            return _result;
+        }
+
+        /// <summary>
+        /// Method: Download
+        /// </summary>
+        [HttpGet("Download")]
+        [Authorize]
+        public virtual async Task<ActionResult<ItemResult<IntelliTect.Coalesce.Models.IFile>>> Download(
+            [FromServices] IDataSourceFactory dataSourceFactory,
+            int id)
+        {
+            var dataSource = dataSourceFactory.GetDataSource<CatGallery.Data.Models.Photo, CatGallery.Data.Models.Photo>("Default");
+            var (itemResult, _) = await dataSource.GetItemAsync(id, new ListParameters());
+            if (!itemResult.WasSuccessful)
+            {
+                return new ItemResult<IntelliTect.Coalesce.Models.IFile>(itemResult);
+            }
+            var item = itemResult.Object;
+            var _methodResult = await item.Download();
+            await Db.SaveChangesAsync();
+            if (_methodResult != null)
+            {
+                string _contentType = _methodResult.ContentType;
+                if (string.IsNullOrWhiteSpace(_contentType) && (
+                    string.IsNullOrWhiteSpace(_methodResult.Name) ||
+                    !(new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider().TryGetContentType(_methodResult.Name, out _contentType))
+                ))
+                {
+                    _contentType = "application/octet-stream";
+                }
+                return File(_methodResult.Content, _contentType, _methodResult.Name, !(_methodResult.Content is System.IO.MemoryStream));
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }

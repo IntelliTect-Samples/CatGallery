@@ -5,6 +5,24 @@ import { AxiosPromise, AxiosResponse, AxiosRequestConfig } from 'axios'
 
 export class PhotoApiClient extends ModelApiClient<$models.Photo> {
   constructor() { super($metadata.Photo) }
+  public upload(file: File | null, isPublic: boolean | null, tags: string[] | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.Photo>> {
+    const $method = this.$metadata.methods.upload
+    const $params =  {
+      file,
+      isPublic,
+      tags,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+  public download(id: number, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<File>> {
+    const $method = this.$metadata.methods.download
+    const $params =  {
+      id,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
 }
 
 

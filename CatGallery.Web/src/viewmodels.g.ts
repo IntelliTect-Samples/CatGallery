@@ -8,8 +8,6 @@ export interface PhotoViewModel extends $models.Photo {
   uploadDate: Date | null;
   uploadedById: string | null;
   uploadedByName: string | null;
-  originalFileName: string | null;
-  storageUrl: string | null;
   isPublic: boolean | null;
   photoTags: PhotoTagViewModel[] | null;
 }
@@ -20,6 +18,21 @@ export class PhotoViewModel extends ViewModel<$models.Photo, $apiClients.PhotoAp
     return this.$addChild('photoTags') as PhotoTagViewModel
   }
   
+  get tags(): ReadonlyArray<TagViewModel> {
+    return (this.photoTags || []).map($ => $.tag!).filter($ => $)
+  }
+  
+  public get download() {
+    const download = this.$apiClient.$makeCaller(
+      this.$metadata.methods.download,
+      (c) => c.download(this.$primaryKey),
+      () => ({}),
+      (c, args) => c.download(this.$primaryKey))
+    
+    Object.defineProperty(this, 'download', {value: download});
+    return download
+  }
+  
   constructor(initialData?: DeepPartial<$models.Photo> | null) {
     super($metadata.Photo, new $apiClients.PhotoApiClient(), initialData)
   }
@@ -27,6 +40,17 @@ export class PhotoViewModel extends ViewModel<$models.Photo, $apiClients.PhotoAp
 defineProps(PhotoViewModel, $metadata.Photo)
 
 export class PhotoListViewModel extends ListViewModel<$models.Photo, $apiClients.PhotoApiClient, PhotoViewModel> {
+  
+  public get upload() {
+    const upload = this.$apiClient.$makeCaller(
+      this.$metadata.methods.upload,
+      (c, file: File | null, isPublic: boolean | null, tags: string[] | null) => c.upload(file, isPublic, tags),
+      () => ({file: null as File | null, isPublic: null as boolean | null, tags: null as string[] | null, }),
+      (c, args) => c.upload(args.file, args.isPublic, args.tags))
+    
+    Object.defineProperty(this, 'upload', {value: upload});
+    return upload
+  }
   
   constructor() {
     super($metadata.Photo, new $apiClients.PhotoApiClient())

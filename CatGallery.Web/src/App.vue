@@ -25,17 +25,22 @@
           </v-card-title>
           <v-card-text>
             <!-- File Input -->
-            <input type="file" />
+            <c-input :model="photoList.upload" for="file"></c-input>
 
             <!-- Visibility Input -->
-            <v-radio-group row label="Visibility:">
+            <v-radio-group
+              row
+              label="Visibility:"
+              v-model="photoList.upload.args.isPublic"
+            >
               <v-radio :value="true" label="Public"></v-radio>
               <v-radio :value="false" label="Private"></v-radio>
             </v-radio-group>
 
             <!-- File Input -->
             <v-combobox
-              v-model="selectedTags"
+              v-model="photoList.upload.args.tags"
+              :items="tagList.$items.map((t) => t.name)"
               label="Tags"
               multiple
               chips
@@ -47,7 +52,8 @@
             <v-spacer></v-spacer>
             <v-btn
               color="primary"
-              @click="alert('placeholder - perform upload')"
+              @click="uploadPhoto()"
+              :loading="photoList.upload.isLoading"
             >
               Upload
             </v-btn>
@@ -68,10 +74,22 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, reactive } from "vue";
+import { PhotoListViewModel, TagListViewModel } from "./viewmodels.g";
 
-const alert = window.alert.bind(window);
 const uploadOpen = ref(false);
-const selectedTags = ref([]);
+
+const photoList = new PhotoListViewModel();
+
+const tagList = new TagListViewModel();
+tagList.$load();
+
+watch(uploadOpen, (v) => v && tagList.$load());
+
+async function uploadPhoto() {
+  await photoList.upload.invokeWithArgs();
+  photoList.upload.resetArgs();
+  uploadOpen.value = false;
+}
 </script>
 
 <style lang="scss">

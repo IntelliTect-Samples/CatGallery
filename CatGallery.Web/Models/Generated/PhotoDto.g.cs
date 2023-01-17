@@ -16,8 +16,6 @@ namespace CatGallery.Web.Models
         private System.DateTimeOffset? _UploadDate;
         private string _UploadedById;
         private string _UploadedByName;
-        private string _OriginalFileName;
-        private string _StorageUrl;
         private bool? _IsPublic;
         private System.Collections.Generic.ICollection<CatGallery.Web.Models.PhotoTagDtoGen> _PhotoTags;
 
@@ -40,16 +38,6 @@ namespace CatGallery.Web.Models
         {
             get => _UploadedByName;
             set { _UploadedByName = value; Changed(nameof(UploadedByName)); }
-        }
-        public string OriginalFileName
-        {
-            get => _OriginalFileName;
-            set { _OriginalFileName = value; Changed(nameof(OriginalFileName)); }
-        }
-        public string StorageUrl
-        {
-            get => _StorageUrl;
-            set { _StorageUrl = value; Changed(nameof(StorageUrl)); }
         }
         public bool? IsPublic
         {
@@ -74,8 +62,6 @@ namespace CatGallery.Web.Models
             this.UploadDate = obj.UploadDate;
             this.UploadedById = obj.UploadedById;
             this.UploadedByName = obj.UploadedByName;
-            this.OriginalFileName = obj.OriginalFileName;
-            this.StorageUrl = obj.StorageUrl;
             this.IsPublic = obj.IsPublic;
             var propValPhotoTags = obj.PhotoTags;
             if (propValPhotoTags != null && (tree == null || tree[nameof(this.PhotoTags)] != null))
@@ -101,12 +87,6 @@ namespace CatGallery.Web.Models
             if (OnUpdate(entity, context)) return;
 
             if (ShouldMapTo(nameof(PhotoId))) entity.PhotoId = (PhotoId ?? entity.PhotoId);
-            if (ShouldMapTo(nameof(UploadDate))) entity.UploadDate = (UploadDate ?? entity.UploadDate);
-            if (ShouldMapTo(nameof(UploadedById))) entity.UploadedById = UploadedById;
-            if (ShouldMapTo(nameof(UploadedByName))) entity.UploadedByName = UploadedByName;
-            if (ShouldMapTo(nameof(OriginalFileName))) entity.OriginalFileName = OriginalFileName;
-            if (ShouldMapTo(nameof(StorageUrl))) entity.StorageUrl = StorageUrl;
-            if (ShouldMapTo(nameof(IsPublic))) entity.IsPublic = (IsPublic ?? entity.IsPublic);
         }
 
         /// <summary>
