@@ -13,23 +13,18 @@ namespace CatGallery.Web.Models
         public PhotoDtoGen() { }
 
         private int? _PhotoId;
-        private System.Collections.Generic.ICollection<CatGallery.Web.Models.PhotoTagDtoGen> _Tags;
         private System.DateTimeOffset? _UploadDate;
         private string _UploadedById;
         private string _UploadedByName;
         private string _OriginalFileName;
         private string _StorageUrl;
         private bool? _IsPublic;
+        private System.Collections.Generic.ICollection<CatGallery.Web.Models.PhotoTagDtoGen> _PhotoTags;
 
         public int? PhotoId
         {
             get => _PhotoId;
             set { _PhotoId = value; Changed(nameof(PhotoId)); }
-        }
-        public System.Collections.Generic.ICollection<CatGallery.Web.Models.PhotoTagDtoGen> Tags
-        {
-            get => _Tags;
-            set { _Tags = value; Changed(nameof(Tags)); }
         }
         public System.DateTimeOffset? UploadDate
         {
@@ -61,6 +56,11 @@ namespace CatGallery.Web.Models
             get => _IsPublic;
             set { _IsPublic = value; Changed(nameof(IsPublic)); }
         }
+        public System.Collections.Generic.ICollection<CatGallery.Web.Models.PhotoTagDtoGen> PhotoTags
+        {
+            get => _PhotoTags;
+            set { _PhotoTags = value; Changed(nameof(PhotoTags)); }
+        }
 
         /// <summary>
         /// Map from the domain object to the properties of the current DTO instance.
@@ -77,16 +77,16 @@ namespace CatGallery.Web.Models
             this.OriginalFileName = obj.OriginalFileName;
             this.StorageUrl = obj.StorageUrl;
             this.IsPublic = obj.IsPublic;
-            var propValTags = obj.Tags;
-            if (propValTags != null && (tree == null || tree[nameof(this.Tags)] != null))
+            var propValPhotoTags = obj.PhotoTags;
+            if (propValPhotoTags != null && (tree == null || tree[nameof(this.PhotoTags)] != null))
             {
-                this.Tags = propValTags
+                this.PhotoTags = propValPhotoTags
                     .OrderBy(f => f.PhotoTagId)
-                    .Select(f => f.MapToDto<CatGallery.Data.Models.PhotoTag, PhotoTagDtoGen>(context, tree?[nameof(this.Tags)])).ToList();
+                    .Select(f => f.MapToDto<CatGallery.Data.Models.PhotoTag, PhotoTagDtoGen>(context, tree?[nameof(this.PhotoTags)])).ToList();
             }
-            else if (propValTags == null && tree?[nameof(this.Tags)] != null)
+            else if (propValPhotoTags == null && tree?[nameof(this.PhotoTags)] != null)
             {
-                this.Tags = new PhotoTagDtoGen[0];
+                this.PhotoTags = new PhotoTagDtoGen[0];
             }
 
         }

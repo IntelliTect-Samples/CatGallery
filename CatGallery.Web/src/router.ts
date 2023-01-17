@@ -12,14 +12,14 @@ export default new Router({
       name: "home",
       component: () => import("./views/Home.vue"),
     },
-    {
-      path: "/coalesce-example",
-      name: "coalesce-example",
-      component: () => import("./views/CoalesceExample.vue"),
-      props: { title: "Coalesce Example" },
-    },
 
     // Coalesce admin routes
+    {
+      path: "/admin",
+      name: "admin",
+      component: () => import("./views/AdminLinks.vue"),
+      props: { title: "Admin Links" },
+    },
     {
       path: "/admin/:type",
       name: "coalesce-admin-list",

@@ -1,34 +1,60 @@
 <template>
   <v-app id="vue-app">
-    <v-navigation-drawer v-model="drawer" app clipped>
-      <v-list>
-        <v-list-item link to="/">
-          <v-list-item-action>
-            <v-icon>fas fa-home</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Home</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item link to="/coalesce-example">
-          <v-list-item-action>
-            <v-icon>fas fa-palette</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Coalesce Example</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-app-bar app color="primary" dark dense clipped-left>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+    <v-app-bar app color="white" dense clipped-left>
       <v-toolbar-title>
-        <router-link to="/" class="white--text" style="text-decoration: none">
-          Coalesce Vue Template
+        <router-link to="/" style="text-decoration: none">
+          <v-icon left color="primary">fa fa-cat</v-icon>
+          Cat Gallery
         </router-link>
       </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-dialog max-width="500px" v-model="uploadOpen">
+        <template #activator="{ on }">
+          <v-btn v-on="on" text>
+            <v-icon left>fa fa-upload</v-icon> Upload
+          </v-btn>
+        </template>
+
+        <v-card>
+          <v-card-title>
+            Upload Image
+            <v-spacer></v-spacer>
+            <v-btn @click="uploadOpen = false" title="Close" icon>
+              <v-icon> fa fa-times</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text>
+            <!-- File Input -->
+            <input type="file" />
+
+            <!-- Visibility Input -->
+            <v-radio-group row label="Visibility:">
+              <v-radio :value="true" label="Public"></v-radio>
+              <v-radio :value="false" label="Private"></v-radio>
+            </v-radio-group>
+
+            <!-- File Input -->
+            <v-combobox
+              v-model="selectedTags"
+              label="Tags"
+              multiple
+              chips
+              deletable-chips
+              small-chips
+            ></v-combobox>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              @click="alert('placeholder - perform upload')"
+            >
+              Upload
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-btn text to="/admin"> <v-icon left>fa fa-cogs</v-icon> Admin </v-btn>
     </v-app-bar>
 
     <v-main>
@@ -41,30 +67,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
-import { useRoute } from "vue-router/composables";
+import { ref, computed, watch, reactive } from "vue";
 
-const route = useRoute();
-const drawer = ref<boolean | null>(null);
-const routeComponent = ref<any>();
-
-const routeMeta = computed(() => {
-  if (!route || route.name === null) return null;
-  return route.meta;
-});
-
-const baseTitle = document.title;
-watch(
-  () => routeComponent.value?.pageTitle,
-  (n: string | null | undefined) => {
-    if (n) {
-      document.title = n + " - " + baseTitle;
-    } else {
-      document.title = baseTitle;
-    }
-  },
-  { immediate: true }
-);
+const alert = window.alert.bind(window);
+const uploadOpen = ref(false);
+const selectedTags = ref([]);
 </script>
 
 <style lang="scss">

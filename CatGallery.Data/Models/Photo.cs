@@ -6,8 +6,6 @@ public class Photo
 {
     public int PhotoId { get; set; }
 
-    public ICollection<PhotoTag> Tags { get; set; }
-
     public DateTimeOffset UploadDate { get; set; }
     public string UploadedById { get; set; }
     public string UploadedByName { get; set; }
@@ -16,6 +14,8 @@ public class Photo
     public string StorageUrl { get; set; }
 
     public bool IsPublic { get; set; }
+
+    public ICollection<PhotoTag> PhotoTags { get; set; }
 }
 
 public class PhotoTag

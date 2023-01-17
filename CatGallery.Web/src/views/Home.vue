@@ -1,9 +1,36 @@
 <template>
-  <div class="home">
-    <!-- Component is auto-imported by `unplugin-vue-components`
-    (either kebab-case or PascalCase works.) -->
-    <HelloWorld msg="Welcome to your new Vue.js Coalesce application!" />
-  </div>
+  <v-row class="ma-2">
+    <v-col
+      v-for="(image, n) in images"
+      :key="n"
+      class="d-flex child-flex"
+      cols="3"
+    >
+      <v-card>
+        <v-img height="250" :src="image.imageUrl"></v-img>
+        <v-card-text>
+          <v-chip
+            v-for="(tag, tagN) in image.tags"
+            :key="`${n}-${tagN}`"
+            :color="tag.color"
+            dark
+            small
+            class="mr-1"
+          >
+            {{ tag.name }}
+          </v-chip>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const images = [...Array(10)].map((i) => ({
+  imageUrl: "https://via.placeholder.com/450",
+  tags: [
+    { name: "Tag 1", color: "#345678" },
+    { name: "Tag 2", color: "#876543" },
+  ],
+}));
+</script>

@@ -5,19 +5,19 @@ import { ViewModel, ListViewModel, ServiceViewModel, DeepPartial, defineProps } 
 
 export interface PhotoViewModel extends $models.Photo {
   photoId: number | null;
-  tags: PhotoTagViewModel[] | null;
   uploadDate: Date | null;
   uploadedById: string | null;
   uploadedByName: string | null;
   originalFileName: string | null;
   storageUrl: string | null;
   isPublic: boolean | null;
+  photoTags: PhotoTagViewModel[] | null;
 }
 export class PhotoViewModel extends ViewModel<$models.Photo, $apiClients.PhotoApiClient, number> implements $models.Photo  {
   
   
-  public addToTags() {
-    return this.$addChild('tags') as PhotoTagViewModel
+  public addToPhotoTags() {
+    return this.$addChild('photoTags') as PhotoTagViewModel
   }
   
   constructor(initialData?: DeepPartial<$models.Photo> | null) {

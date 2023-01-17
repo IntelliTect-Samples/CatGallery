@@ -3,13 +3,13 @@ import { Model, DataSource, convertToModel, mapToModel } from 'coalesce-vue/lib/
 
 export interface Photo extends Model<typeof metadata.Photo> {
   photoId: number | null
-  tags: PhotoTag[] | null
   uploadDate: Date | null
   uploadedById: string | null
   uploadedByName: string | null
   originalFileName: string | null
   storageUrl: string | null
   isPublic: boolean | null
+  photoTags: PhotoTag[] | null
 }
 export class Photo {
   
